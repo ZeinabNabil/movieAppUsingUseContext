@@ -1,24 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./App.css";
+import Navbar from "./components/Navbar";
+// import MoviesModule from "./modules/MoviesModule";
+import { Box, Toolbar } from "@mui/material";
+// import NotFound from "./components/NotFound";
+import { Suspense, lazy } from "react";
+import Loading from "./components/Loading";
+
+const Movies = lazy(() => import("./modules/MoviesModule"));
+const NotFound = lazy(() => import("./components/NotFound"));
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Suspense fallback={<Loading />}>
+      <div className="App">
+        <BrowserRouter>
+          <Navbar />
+          <Box component="main" sx={{ p: 3 }}>
+            <Toolbar />
+            <Routes>
+              <Route path="/" element={<Movies />} />
+              <Route path="/movie/*" element={<Movies />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Box>
+        </BrowserRouter>
+      </div>
+    </Suspense>
   );
 }
 
